@@ -4,9 +4,9 @@ import rough from 'roughjs/bundled/rough.esm';
 
 const generator = rough.generator();
 
-function createStroke(x1, y1, x2, y2, type){
+function createStroke(x1, y1, x2, y2, tool){
   let stroke;
-  switch(type){
+  switch(tool){
     case "line":
       stroke = generator.line(x1, y1, x2, y2);
     break;
@@ -22,7 +22,7 @@ function createStroke(x1, y1, x2, y2, type){
 const App = () => {
   const [strokes, setStrokes] = useState([]);
   const [drawing, setDrawing] = useState(false);
-  const [strokeType, setStrokeType] = useState("line");
+  const [toolType, setToolType] = useState("line");
 
   // RENDER TO CANVAS
   useLayoutEffect( () => {
@@ -40,7 +40,7 @@ const App = () => {
 
     const {clientX, clientY} = event;
 
-    const stroke = createStroke(clientX, clientY, clientX, clientY, strokeType);
+    const stroke = createStroke(clientX, clientY, clientX, clientY, toolType);
     setStrokes(prevState => [...prevState, stroke]); // Push element to state.
   };
 
@@ -50,7 +50,7 @@ const App = () => {
     const {clientX, clientY} = event;
     const index = strokes.length -1;
     const {x1, y1} = strokes[index];
-    const updatedStroke = createStroke(x1, y1, clientX, clientY, strokeType);
+    const updatedStroke = createStroke(x1, y1, clientX, clientY, toolType);
 
     // Update stroke with new current data.
     const strokesCopy = [...strokes];
@@ -62,21 +62,22 @@ const App = () => {
     setDrawing(false);
   };
 
+
     return (
     <div>
       <div style={{position: 'fixed'}}>
         <input
           type="radio"
           id="line"
-          checked={strokeType === "line"}
-          onChange={() => setStrokeType("line")}
+          checked={toolType === "line"}
+          onChange={() => setToolType("line")}
         />
         <label htmlFor="line">Line</label>
         <input
           type="radio"
           id="rectangle"
-          checked={strokeType === "rectangle"}
-          onChange={() => setStrokeType("rectangle")}
+          checked={toolType === "rectangle"}
+          onChange={() => setToolType("rectangle")}
         />
         <label htmlFor="rectangle">Rectangle</label>
       </div>
