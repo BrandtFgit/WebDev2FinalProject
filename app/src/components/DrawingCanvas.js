@@ -16,7 +16,7 @@ const DrawingCanvas = () => {
         const context = canvas.getContext("2d");
         canvas.width = 800;
         canvas.height = 450;
-        
+
         // Set initial background color to white
         context.fillStyle = "#FFFFFF"; // White color
         context.fillRect(0, 0, canvas.width, canvas.height);
@@ -121,7 +121,7 @@ const DrawingCanvas = () => {
     
     return (
         <div>
-            <h1>Brandt's Storyboarding Tool!</h1>
+            <h1>Brandt&apos;s Storyboarding Tool!</h1>
             <canvas className="canvas-container"
                 ref={canvasRef}
                 onMouseDown={startDraw}
