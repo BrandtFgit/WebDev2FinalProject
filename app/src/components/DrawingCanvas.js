@@ -13,22 +13,27 @@ const DrawingCanvas = () => {
 
     useEffect(() => {
         const canvas = canvasRef.current;
+        const context = canvas.getContext("2d");
         canvas.width = 800;
         canvas.height = 450;
-
-    
-        const context = canvas.getContext("2d");
         
         // Set initial background color to white
         context.fillStyle = "#FFFFFF"; // White color
         context.fillRect(0, 0, canvas.width, canvas.height);
-    
+        
         context.lineCap = "round";
-        context.strokeStyle = strokeColor; // Set initial stroke color
+        context.strokeStyle = strokeColor; 
         context.lineWidth = strokeSize;
         contextRef.current = context;
     }, []);
-
+    
+    useEffect(() => {
+        if (contextRef.current) {
+            contextRef.current.lineWidth = strokeSize;
+            contextRef.current.strokeStyle = strokeColor;
+        }
+    }, [strokeSize, strokeColor]);
+    
     const startDraw = ({nativeEvent}) => {
         const {offsetX, offsetY} = nativeEvent;
         contextRef.current.beginPath();
@@ -113,17 +118,6 @@ const DrawingCanvas = () => {
         let image = mergedCanvas.toDataURL('image/png');
         link.setAttribute('href', image);
     }
-    
-    
-
-
-    // This use effect prevents the canvas from rerendering when stroke is changed
-    useEffect(() => {
-        if (contextRef.current) {
-            contextRef.current.lineWidth = strokeSize;
-            contextRef.current.strokeStyle = strokeColor;
-        }
-    }, [strokeSize, strokeColor]);
     
     return (
         <div>
