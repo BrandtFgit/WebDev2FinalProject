@@ -8,19 +8,26 @@ const DrawingCanvas = () => {
     const [isDrawing, setIsDrawing] = useState(false);
     const [strokeSize, setStrokeSize] = useState(6);
     const [strokeColor, setStrokeColor] = useState('#000000'); // Default color is black
+    const [interactionDescription, setInteractionDescription] = useState('');
 
     useEffect(() => {
         const canvas = canvasRef.current;
         canvas.width = 800;
         canvas.height = 450;
 
+    
         const context = canvas.getContext("2d");
+        
+        // Set initial background color to white
+        context.fillStyle = "#FFFFFF"; // White color
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    
         context.lineCap = "round";
-        context.strokeStyle = strokeColor;
+        context.strokeStyle = strokeColor; // Set initial stroke color
+        context.lineWidth = strokeSize;
         contextRef.current = context;
     }, []);
 
-    // M1 Pressed
     const startDraw = ({nativeEvent}) => {
         const {offsetX, offsetY} = nativeEvent;
         contextRef.current.beginPath();
@@ -31,8 +38,6 @@ const DrawingCanvas = () => {
         nativeEvent.preventDefault();
     };
 
-
-    // M1 Held
     const draw = ({nativeEvent}) => {
         if(!isDrawing) {
             return;
@@ -43,7 +48,6 @@ const DrawingCanvas = () => {
         nativeEvent.preventDefault();
     };
 
-    // M1 Released
     const stopDraw = () => {
         contextRef.current.closePath();
         setIsDrawing(false);
@@ -65,12 +69,52 @@ const DrawingCanvas = () => {
         setStrokeColor(event.target.value);
     }
 
+    const handleInteractionDescriptionChange = (event) => {
+        setInteractionDescription(event.target.value);
+    }
+
+    const clearCanvas = () => {
+        const canvas = canvasRef.current;
+        const context = canvas.getContext('2d');
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "#FFFFFF"; // White color
+        context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     const saveImageToLocal = (event) => {
         let link = event.currentTarget;
         link.setAttribute('download', 'canvas.png');
-        let image = canvasRef.current.toDataURL('image/png')
-        link.setAttribute('href', image)
+    
+        const canvas = canvasRef.current;
+    
+        // Create a new canvas to hold both the original content and the caption
+        const mergedCanvas = document.createElement('canvas');
+        const mergedContext = mergedCanvas.getContext('2d');
+        mergedCanvas.width = canvas.width;
+        mergedCanvas.height = canvas.height + 50; // Height for the caption bar
+    
+        // Draw the original canvas content to the merged canvas
+        mergedContext.drawImage(canvas, 0, 0);
+    
+        // Draw the caption bar
+        mergedContext.fillStyle = '#E6E9FF'; // White color for the caption bar
+        mergedContext.fillRect(0, canvas.height, canvas.width, 50);
+    
+        // Draw the interaction description text on the caption bar with a margin
+        mergedContext.fillStyle = '#000000'; // Black color for the text
+        mergedContext.font = '18px Arial'; // Set the font style
+        const margin = 5; // Margin around the text
+        const textX = margin; // X-coordinate for the text (start from the left margin)
+        const textY = canvas.height + 25; // Y-coordinate for the text (centered vertically)
+        mergedContext.fillText(interactionDescription, textX, textY); // Draw the text
+    
+        // Convert the merged canvas to a data URL and set it as the download link href
+        let image = mergedCanvas.toDataURL('image/png');
+        link.setAttribute('href', image);
     }
+    
+    
+
 
     // This use effect prevents the canvas from rerendering when stroke is changed
     useEffect(() => {
@@ -79,9 +123,10 @@ const DrawingCanvas = () => {
             contextRef.current.strokeStyle = strokeColor;
         }
     }, [strokeSize, strokeColor]);
-
+    
     return (
         <div>
+            <h1>Brandt's Storyboarding Tool!</h1>
             <canvas className="canvas-container"
                 ref={canvasRef}
                 onMouseDown={startDraw}
@@ -90,6 +135,12 @@ const DrawingCanvas = () => {
                 onMouseLeave={stopDraw}
             >
             </canvas>
+            <textarea
+                className="interaction-textarea"
+                value={interactionDescription}
+                onChange={handleInteractionDescriptionChange}
+                placeholder="Write what's happening in your scene..."
+            />
             <div className="controls">
                 <div>
                     <input
@@ -117,6 +168,9 @@ const DrawingCanvas = () => {
                         Erase
                     </button>
                     <a id="download_image_link" href="download_link" onClick={saveImageToLocal}>Save Image</a>
+                    <button onClick={clearCanvas}>
+                        Clear Canvas
+                    </button>
                 </div>
             </div>
         </div>

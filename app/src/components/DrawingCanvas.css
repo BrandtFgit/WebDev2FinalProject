@@ -54,3 +54,54 @@
     border: none;
     border-radius: 5px;
 }
+
+
+.controls button.clear-button {
+    background-color: #ff0000; /* Red background color */
+    color: #ffffff; /* White text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.controls button.clear-button:hover {
+    background-color: #cc0000; /* Darker red on hover */
+}
+
+.controls a.save-link {
+    background-color: #00ff00; /* Green background color */
+    color: #ffffff; /* White text color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none; /* Remove default underline */
+}
+
+.controls a.save-link:hover {
+    background-color: #00cc00; /* Darker green on hover */
+}
+
+h1 {
+    text-align: center;
+    font-size: 3em; /* Adjust the font size as needed */
+    font-weight: bold; /* Make the text bold */
+    color: #333; /* Set the color of the text */
+    letter-spacing: 2px; /* Add some letter spacing for emphasis */
+    margin-top: 8px; /* Add some top margin for spacing */
+}
+
+.interaction-textarea {
+    width: 800px; /* Same width as the canvas */
+    height: 100px; /* Set desired height */
+    margin: 20px auto; /* Center horizontally with top and bottom margin */
+    display: block;
+    resize: vertical; /* Allow vertical resizing */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 5px; /* Add some border radius for aesthetics */
+    padding: 10px; /* Add some padding */
+    box-sizing: border-box; /* Include padding in the width */
+}
