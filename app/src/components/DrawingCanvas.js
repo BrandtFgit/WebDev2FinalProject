@@ -7,6 +7,7 @@ const DrawingCanvas = () => {
 
     const [isDrawing, setIsDrawing] = useState(false);
     const [strokeSize, setStrokeSize] = useState(6);
+    const [strokeColor, setStrokeColor] = useState('#000000'); // Default color is black
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -15,10 +16,11 @@ const DrawingCanvas = () => {
 
         const context = canvas.getContext("2d");
         context.lineCap = "round";
-        context.strokeStyle = "black";
+        context.strokeStyle = strokeColor;
         contextRef.current = context;
     }, []);
 
+    // M1 Pressed
     const startDraw = ({nativeEvent}) => {
         const {offsetX, offsetY} = nativeEvent;
         contextRef.current.beginPath();
@@ -29,6 +31,8 @@ const DrawingCanvas = () => {
         nativeEvent.preventDefault();
     };
 
+
+    // M1 Held
     const draw = ({nativeEvent}) => {
         if(!isDrawing) {
             return;
@@ -39,6 +43,7 @@ const DrawingCanvas = () => {
         nativeEvent.preventDefault();
     };
 
+    // M1 Released
     const stopDraw = () => {
         contextRef.current.closePath();
         setIsDrawing(false);
@@ -56,6 +61,10 @@ const DrawingCanvas = () => {
         setStrokeSize(parseInt(event.target.value));
     }
 
+    const handleColorChange = (event) => {
+        setStrokeColor(event.target.value);
+    }
+
     const saveImageToLocal = (event) => {
         let link = event.currentTarget;
         link.setAttribute('download', 'canvas.png');
@@ -63,11 +72,13 @@ const DrawingCanvas = () => {
         link.setAttribute('href', image)
     }
 
+    // This use effect prevents the canvas from rerendering when stroke is changed
     useEffect(() => {
         if (contextRef.current) {
             contextRef.current.lineWidth = strokeSize;
+            contextRef.current.strokeStyle = strokeColor;
         }
-    }, [strokeSize]);
+    }, [strokeSize, strokeColor]);
 
     return (
         <div>
@@ -89,6 +100,14 @@ const DrawingCanvas = () => {
                         onChange={handleStrokeSizeChange}
                     />
                     <span>Stroke Size: {strokeSize}</span>
+                </div>
+                <div>
+                    <input
+                        type="color"
+                        value={strokeColor}
+                        onChange={handleColorChange}
+                    />
+                    <span>Selected Color: {strokeColor}</span>
                 </div>
                 <div>
                     <button onClick={setToDraw}>
